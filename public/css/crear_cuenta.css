@@ -1,0 +1,139 @@
+/* ------------------------- */
+/* FONDO SUPER PROFESIONAL   */
+/* ------------------------- */
+.registro-body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+
+    background: radial-gradient(circle at top, rgba(0,0,80,0.5), rgba(0,0,0,0.9)),
+        url('../img/galga_header.jpg') center/cover no-repeat;
+}
+
+/* CAPA OSCURA */
+.registro-overlay {
+    width: 100%;
+    max-width: 430px;
+}
+
+/* ------------------------- */
+/* TARJETA - VIDRIO PREMIUM  */
+/* ------------------------- */
+.registro-card {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    border-radius: 22px;
+
+    padding: 35px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* ------------------------- */
+/* LOGO                      */
+/* ------------------------- */
+.registro-logo {
+    width: 120px;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.45));
+}
+
+/* ------------------------- */
+/* TIPOGRAFÍA                */
+/* ------------------------- */
+.registro-card h2 {
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+.registro-card p,
+label {
+    color: #e8e8e8;
+    font-size: 0.92rem;
+}
+
+/* ------------------------- */
+/* INPUTS                    */
+/* ------------------------- */
+input,
+select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    color: #ffffff;
+    border-radius: 12px;
+    transition: 0.25s;
+}
+
+input::placeholder,
+select option {
+    color: #ccc;
+}
+
+input:focus,
+select:focus {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: #4d7bff;
+    box-shadow: 0 0 10px rgba(77, 123, 255, 0.6);
+    outline: none;
+}
+
+/* ------------------------- */
+/* BOTÓN CREAR CUENTA        */
+/* ------------------------- */
+.btn-crear {
+    width: 100%;
+    padding: 14px;
+
+    background: linear-gradient(135deg, #1b44ff, #0026c7);
+    border: none;
+    border-radius: 14px;
+
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+
+    transition: 0.25s ease;
+}
+
+.btn-crear:hover {
+    background: linear-gradient(135deg, #002dff, #001aa3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 80, 255, 0.45);
+}
+
+/* ------------------------- */
+/* LINK INICIAR SESIÓN       */
+/* ------------------------- */
+.btn-link-login {
+    color: #74a2ff;
+    font-weight: 600;
+}
+
+.btn-link-login:hover {
+    text-decoration: underline;
+    color: #9bc0ff;
+}
+
+/* ------------------------- */
+/* ANIMACIÓN                 */
+/* ------------------------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

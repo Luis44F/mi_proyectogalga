@@ -1,0 +1,115 @@
+/* ================= FONDO ANIMADO ================= */
+.inicio-body {
+    background: radial-gradient(circle at 20% 30%, #0000ff55, transparent),
+                radial-gradient(circle at 80% 70%, #00e1ff44, transparent),
+                url('../img/galga_header.jpg') center/cover no-repeat;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: backgroundMove 15s infinite alternate ease-in-out;
+}
+
+@keyframes backgroundMove {
+    0% { background-size: 105% }
+    100% { background-size: 120% }
+}
+
+/* ================= EFECTOS DE ENTRADA ================= */
+.fade-in { animation: fadeIn 1.5s ease-out; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px) }
+    to { opacity: 1; transform: translateY(0) }
+}
+
+.title-animate { animation: slideDown 1.5s ease; }
+.subtitle-animate { animation: slideDown 2s ease; }
+
+/* ICONO FLOTANDO */
+.floating {
+    animation: floating 4s ease-in-out infinite;
+}
+@keyframes floating {
+    0% { transform: translateY(0px) }
+    50% { transform: translateY(-10px) }
+    100% { transform: translateY(0px) }
+}
+
+/* ================= BOTÓN ANIMADO ================= */
+.pulse-btn {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,255,0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,0,255,0.6); }
+    100% { transform: scale(1); box-shadow: 0 0 0 rgba(0,0,255,0.4); }
+}
+
+/* ================= LOGIN OVERLAY ================= */
+.login-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    backdrop-filter: blur(8px);
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* ================= LOGIN CARD ================= */
+.login-card {
+    width: 400px;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.20);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeSlideUp 0.8s forwards ease-out;
+}
+
+@keyframes fadeSlideUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= INPUTS ================= */
+.custom-input {
+    border-radius: 12px;
+    padding: 11px 15px;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+.custom-input:focus {
+    border-color: #0000ff;
+    box-shadow: 0 0 10px rgba(0,0,255,0.4);
+}
+
+/* ================= BOTÓN LOGIN ================= */
+.login-btn {
+    background-color: #0000ff;
+    padding: 12px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn.shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -80px;
+    width: 60px;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, #ffffffaa, transparent);
+    animation: shineEffect 2s infinite;
+}
+
+@keyframes shineEffect {
+    to { left: 120%; }
+}

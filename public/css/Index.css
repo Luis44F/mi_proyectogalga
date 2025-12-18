@@ -1,0 +1,115 @@
+/* FUENTE Y BASE */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f3f6fb;
+  color: #1a1a1a;
+  padding-top: 80px; /* para navbar fija */
+}
+
+/* NAVBAR */
+.navbar-galga {
+  background: transparent;
+  transition: 0.35s ease-in-out;
+}
+
+.navbar-galga.scrolled {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+/* LOGO */
+.logo-galga {
+  height: 46px;
+  transition: 0.2s ease;
+}
+
+.navbar-galga.scrolled .logo-galga {
+  transform: scale(0.92);
+}
+
+/* ENLACES */
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+}
+
+.nav-link:hover {
+  color: #003c9b !important;
+}
+
+/* HERO */
+.hero-section {
+  height: 85vh;
+  background: linear-gradient(rgba(0, 20, 60, 0.6), rgba(0, 20, 60, 0.65)),
+              url('../img/galga_header.jpg') center/cover no-repeat;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 3.4rem;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  max-width: 700px;
+  margin: 15px auto 0;
+}
+
+/* SERVICIOS */
+.section-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #002f7d;
+}
+
+/* 🔥 Tarjetas uniformes */
+.service-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border-left: 6px solid #003c9b;
+  padding: 25px;
+  transition: all 0.25s ease;
+  height: 100%;
+  min-height: 170px;       /* ✔ altura igual para TODAS */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.service-card h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.service-card p {
+  margin-top: 8px;
+  font-size: 0.95rem;      /* ✔ tamaño igual */
+  line-height: 1.35;        /* ✔ proporción uniforme */
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 28px rgba(0,0,0,0.12);
+}
+
+/* VIDEO */
+.video-element {
+  width: 90%;
+  max-width: 750px;
+  border-radius: 14px;
+  box-shadow: 0 12px 22px rgba(0,0,0,0.2);
+}
+
+/* FOOTER */
+.footer-galga {
+  background: #001b5e;
+  color: white;
+}
