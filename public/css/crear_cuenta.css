@@ -87,6 +87,38 @@ select:focus {
 }
 
 /* ------------------------- */
+/* PASSWORD CON OJO          */
+/* ------------------------- */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.password-wrapper input {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+
+    background: transparent;
+    border: none;
+    color: #dcdcdc;
+    font-size: 1.1rem;
+
+    cursor: pointer;
+    padding: 0;
+}
+
+.toggle-password:hover {
+    color: #9bb6ff;
+}
+
+/* ------------------------- */
 /* BOTÓN CREAR CUENTA        */
 /* ------------------------- */
 .btn-crear {
