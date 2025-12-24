@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PapeletaController;
+use App\Http\Controllers\LoteController;
 
 // --------------------------------------------
 // HOME
@@ -77,4 +78,16 @@ Route::middleware('auth')->group(function () {
     // Guardar papeleta
     Route::post('/papeletas', [PapeletaController::class, 'store'])
         ->name('papeletas.store');
+});
+
+
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/papeletas/{id}/lotes', [LoteController::class, 'index'])
+        ->name('lotes.index');
+
+    Route::post('/lotes', [LoteController::class, 'store'])
+        ->name('lotes.store');
 });

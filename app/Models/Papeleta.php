@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Lote;
 
 class Papeleta extends Model
 {
@@ -23,4 +24,9 @@ class Papeleta extends Model
         'fecha_entrega',
         'estado'
     ];
+
+    public function lotes()
+    {
+        return $this->hasMany(Lote::class);
+    }
 }
