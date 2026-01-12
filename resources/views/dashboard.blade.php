@@ -26,7 +26,6 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-
     <div class="sidebar-header">
         <div class="logo-circle">G</div>
         <span class="logo-text">GALGA</span>
@@ -69,7 +68,119 @@
 
 <h1 class="mb-4 fw-bold">Panel Principal</h1>
 
-<!-- MÉTRICAS -->
+@php
+    $user = auth()->user();
+@endphp
+
+<!-- ================= DASHBOARD POR PERFIL ================= -->
+
+{{-- 👑 ADMINISTRADOR GENERAL --}}
+@if($user->isAdmin())
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card-galga text-center">
+            <div>📄 Papeletas</div>
+            <div class="metric-blue">{{ $totalPapeletas }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-galga text-center">
+            <div>⏳ Pendientes</div>
+            <div class="metric-yellow">{{ $lotesPendientes }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-galga text-center">
+            <div>⚙️ En proceso</div>
+            <div class="metric-blue">{{ $lotesProceso }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-galga text-center">
+            <div>✅ Terminados</div>
+            <div class="metric-green">{{ $lotesTerminados }}</div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- 👑 ADMINISTRACIÓN --}}
+@if($user->isAdmin())
+<div class="card-galga mb-4">
+    <h5 class="fw-bold">👑 Administración de usuarios</h5>
+
+    @foreach($users as $u)
+    <form method="POST"
+          action="{{ route('admin.usuario.rol', $u) }}"
+          class="d-flex align-items-center gap-2 mb-2">
+        @csrf
+
+        <strong>{{ $u->nombre_completo }}</strong>
+
+        <select name="rol" class="form-select form-select-sm w-auto">
+            <option value="Administrador" {{ $u->rol=='Administrador'?'selected':'' }}>Administrador</option>
+            <option value="Supervisor" {{ $u->rol=='Supervisor'?'selected':'' }}>Supervisor</option>
+            <option value="Operario" {{ $u->rol=='Operario'?'selected':'' }}>Operario</option>
+        </select>
+
+        <button class="btn btn-sm btn-galga">Guardar</button>
+    </form>
+    @endforeach
+</div>
+@endif
+
+
+{{-- 🧵 TEJEDORA --}}
+@if($user->isTejedora())
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card-galga">
+            <h5 class="fw-bold">🧶 Papeletas para Tejido</h5>
+            <p class="mb-1">Total disponibles: <strong>{{ $totalPapeletas }}</strong></p>
+            <small class="text-muted">Solo visualización</small>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- 🧭 SUPERVISORES --}}
+@if($user->isSupervisor())
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card-galga text-center">
+            <div>⏳ Pendientes</div>
+            <div class="metric-yellow">{{ $lotesPendientes }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-galga text-center">
+            <div>⚙️ En proceso</div>
+            <div class="metric-blue">{{ $lotesProceso }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card-galga text-center">
+            <div>✅ Terminados</div>
+            <div class="metric-green">{{ $lotesTerminados }}</div>
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- 🏭 PRODUCCIÓN --}}
+@if($user->isProduccion())
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card-galga">
+            <h5 class="fw-bold">🏭 Producción</h5>
+            <p class="mb-0">Seguimiento de lotes asignados a tu área</p>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ================= MÉTRICAS ================= -->
+
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card-galga text-center">
@@ -84,34 +195,39 @@
         <div class="card-galga text-center">
             <div>Usuarios registrados</div>
             <div class="metric-green">
-                {{ $users->count() }}
+                {{ $users->count() + 1 }}
             </div>
         </div>
     </div>
 </div>
 
-<!-- MENSAJERÍA -->
+<!-- ================= MENSAJERÍA ================= -->
+
 <div class="card-galga p-0" id="mensajes">
 <div class="chat-container">
 
 <!-- USUARIOS -->
 <div class="chat-users {{ request('user') ? 'd-none d-md-block' : '' }}">
-@foreach($users as $user)
-<a href="{{ route('dashboard',['user'=>$user->id]) }}"
-   class="chat-user {{ request('user')==$user->id?'active':'' }}">
+@foreach($users as $u)
+<a href="{{ route('dashboard',['user'=>$u->id]) }}"
+   class="chat-user {{ request('user')==$u->id?'active':'' }}">
     <div class="chat-avatar">
-        {{ strtoupper(substr($user->nombre_completo,0,1)) }}
+        {{ strtoupper(substr($u->nombre_completo,0,1)) }}
     </div>
     <div>
-        <strong>{{ $user->nombre_completo }}</strong><br>
-        <small class="text-muted">Usuario</small>
+        <strong>{{ $u->nombre_completo }}</strong><br>
+        <small class="text-muted">
+            {{ $u->rol }}
+
+        </small>
     </div>
 </a>
 @endforeach
 </div>
 
 <!-- CHAT -->
-<div class="chat-area {{ request('user')?'':'d-none d-md-flex' }}">
+<!-- CHAT -->
+<div class="chat-area {{ request('user') ? '' : 'd-none d-md-flex' }}">
 
 @if($selectedUser)
 
@@ -120,28 +236,40 @@
     <a href="{{ route('dashboard') }}" class="btn btn-light d-md-none me-2">
         <i class="bi bi-arrow-left"></i>
     </a>
+
     <div class="chat-avatar me-2">
         {{ strtoupper(substr($selectedUser->nombre_completo,0,1)) }}
     </div>
-    <strong>{{ $selectedUser->nombre_completo }}</strong>
+
+    <div>
+        <strong>{{ $selectedUser->nombre_completo }}</strong><br>
+        <small class="text-muted">
+            {{ $selectedUser->rol }}
+        </small>
+    </div>
 </div>
 
 <!-- MENSAJES -->
 <div class="chat-messages" id="chatMessages">
 @foreach($conversation as $msg)
-<div class="message {{ $msg->emisor_id==auth()->id()?'sent':'received' }}">
-    {{ $msg->mensaje }}
+<div class="message {{ $msg->emisor_id == auth()->id() ? 'sent' : 'received' }}">
+
+    <div class="message-text">
+        {{ $msg->mensaje }}
+    </div>
 
     @if($msg->archivo_adj)
-        <br>
-        <a href="{{ asset('storage/'.$msg->archivo_adj) }}" target="_blank">
-            📎 {{ $msg->archivo_nombre_original }}
-        </a>
+        <div class="message-file">
+            <a href="{{ asset('storage/'.$msg->archivo_adj) }}" target="_blank">
+                📎 {{ $msg->archivo_nombre_original }}
+            </a>
+        </div>
     @endif
 
     <div class="message-time">
         {{ $msg->created_at->format('H:i') }}
     </div>
+
 </div>
 @endforeach
 </div>
@@ -161,9 +289,11 @@
 
 <input type="file" name="archivo_adj" id="archivo_adj" hidden>
 
-<input type="text" name="mensaje"
+<input type="text"
+       name="mensaje"
        class="form-control custom-input"
-       placeholder="Escribe un mensaje…">
+       placeholder="Escribe un mensaje…"
+       required>
 
 <button class="btn btn-galga" type="submit">
     <i class="bi bi-send"></i>
@@ -177,31 +307,15 @@
 @endif
 
 </div>
-</div>
-</div>
 
-</div>
-
-<!-- SCRIPTS -->
+<!-- ================= SCRIPTS ================= -->
 <script>
 document.getElementById('btnMenu')?.addEventListener('click',()=>{
     document.getElementById('sidebar').classList.toggle('sidebar-active');
 });
 
-// Scroll automático
 const chat=document.getElementById('chatMessages');
 if(chat) chat.scrollTop=chat.scrollHeight;
-
-// Validación mensaje o archivo
-document.querySelector('.chat-input')?.addEventListener('submit', function(e){
-    const mensaje = this.querySelector('input[name="mensaje"]').value.trim();
-    const archivo = this.querySelector('input[type="file"]').files.length;
-
-    if(!mensaje && archivo === 0){
-        e.preventDefault();
-        alert('Escribe un mensaje o adjunta un archivo');
-    }
-});
 </script>
 
 </body>

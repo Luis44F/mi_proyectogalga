@@ -191,4 +191,13 @@ body {
         margin-left: 0;
         padding: 20px;
     }
+
+
+.metric-yellow {
+    font-size: 32px;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-top: 8px;
+}
+
 }

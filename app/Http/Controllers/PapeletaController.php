@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Papeleta;
+use App\Models\Lote;
 use Illuminate\Http\Request;
 
 class PapeletaController extends Controller
@@ -24,5 +25,13 @@ class PapeletaController extends Controller
         Papeleta::create($request->all());
 
         return redirect()->back();
+    }
+
+    // 🔥 VER LOTES DE UNA PAPELETA
+    public function show($id)
+    {
+        $papeleta = Papeleta::with('lotes.usuario')->findOrFail($id);
+
+        return view('papeletas.show', compact('papeleta'));
     }
 }
