@@ -145,6 +145,13 @@ body {
     margin-top: 8px;
 }
 
+.metric-yellow {
+    font-size: 32px;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-top: 8px;
+}
+
 .btn-galga {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: #fff;
@@ -174,7 +181,6 @@ body {
     outline: none;
 }
 
-/* Mobile navbar */
 .navbar-dark.bg-dark {
     background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
 }
@@ -191,13 +197,4 @@ body {
         margin-left: 0;
         padding: 20px;
     }
-
-
-.metric-yellow {
-    font-size: 32px;
-    font-weight: 700;
-    color: #f59e0b;
-    margin-top: 8px;
-}
-
 }

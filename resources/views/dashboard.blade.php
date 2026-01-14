@@ -210,20 +210,40 @@
 <div class="chat-users {{ request('user') ? 'd-none d-md-block' : '' }}">
 @foreach($users as $u)
 <a href="{{ route('dashboard',['user'=>$u->id]) }}"
-   class="chat-user {{ request('user')==$u->id?'active':'' }}">
-    <div class="chat-avatar">
-        {{ strtoupper(substr($u->nombre_completo,0,1)) }}
-    </div>
-    <div>
-        <strong>{{ $u->nombre_completo }}</strong><br>
-        <small class="text-muted">
-            {{ $u->rol }}
+   class="chat-user {{ request('user')==$u->id ? 'active' : '' }}">
 
-        </small>
+    <!-- Avatar -->
+    <div class="chat-avatar">
+        {{ strtoupper(substr($u->nombre_completo, 0, 1)) }}
     </div>
+
+    <!-- Info -->
+    <div class="chat-user-info">
+        <strong>{{ $u->nombre_completo }}</strong>
+
+        <!-- ROL -->
+        <div class="chat-user-role">
+            {{ $u->rol }}
+        </div>
+
+        <!-- ÚLTIMO MENSAJE -->
+        <small class="text-muted">
+    {{ $u->lastMessage->mensaje ?? 'Sin mensajes' }}
+</small>
+
+    </div>
+
+    <!-- Badge -->
+    @if($u->unread_count > 0)
+        <span class="chat-badge">
+            {{ $u->unread_count }}
+        </span>
+    @endif
+
 </a>
 @endforeach
 </div>
+
 
 <!-- CHAT -->
 <!-- CHAT -->

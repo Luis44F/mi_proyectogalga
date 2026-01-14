@@ -12,10 +12,9 @@ class DashboardController extends Controller
     {
         $authUser = auth()->user();
 
-        // Usuarios para mensajería (menos el mismo)
+        // Usuarios para mensajería
         $users = User::where('id', '!=', $authUser->id)->get();
 
-        // Usuario seleccionado en el chat
         $selectedUser = null;
         $conversation = collect();
 
@@ -23,6 +22,14 @@ class DashboardController extends Controller
             $selectedUser = User::find($request->user);
 
             if ($selectedUser) {
+
+                // 🔥 MARCAR MENSAJES COMO LEÍDOS
+                Message::where('emisor_id', $selectedUser->id)
+                    ->where('receptor_id', $authUser->id)
+                    ->where('leido', 0)
+                    ->update(['leido' => 1]);
+
+                // Conversación
                 $conversation = Message::where(function ($q) use ($authUser, $selectedUser) {
                         $q->where('emisor_id', $authUser->id)
                           ->where('receptor_id', $selectedUser->id);
@@ -36,16 +43,16 @@ class DashboardController extends Controller
             }
         }
 
-        // Mensajes recibidos
+        // ✅ ESTA LÍNEA FALTABA
         $messages = Message::where('receptor_id', $authUser->id)->get();
 
         return view('dashboard', [
             'users'             => $users,
             'selectedUser'      => $selectedUser,
             'conversation'      => $conversation,
-            'messages'          => $messages,
+            'messages'          => $messages, // 🔥 YA NO MARCA ERROR
 
-            // Métricas (por ahora en 0 para no romper diseño)
+            // métricas dummy
             'totalPapeletas'    => 0,
             'lotesPendientes'   => 0,
             'lotesProceso'      => 0,
