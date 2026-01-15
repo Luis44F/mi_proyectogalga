@@ -258,6 +258,7 @@
                         <div class="text-center my-3">
                             <small class="text-muted bg-white px-3 py-1 rounded-pill shadow-sm">Inicio de la conversación</small>
                         </div>
+                        
                         @foreach($conversation as $msg)
                         <div class="message {{ $msg->emisor_id == auth()->id() ? 'sent' : 'received' }}">
                             <div class="message-content">
@@ -267,18 +268,26 @@
                                         <div class="name">{{ $msg->archivo_nombre_original }}</div>
                                     </a>
                                 @endif
+                                
                                 <div class="message-text">
                                     {{ $msg->mensaje }}
                                 </div>
-                                <div class="message-time">
-                                    {{ $msg->created_at->format('H:i') }}
-                                    @if($msg->emisor_id == auth()->id())
-                                        <i class="bi bi-check2-all ms-1"></i>
+
+                                <div class="message-time d-flex justify-content-end align-items-center gap-1">
+                                    <span>{{ $msg->created_at->format('H:i') }}</span>
+                                    
+                                    @if($msg->emisor_id === auth()->id())
+                                        @if($msg->leido)
+                                            <i class="bi bi-check2-all text-primary"></i>
+                                        @else
+                                            <i class="bi bi-check2-all text-muted"></i>
+                                        @endif
                                     @endif
                                 </div>
-                            </div>
+                                </div>
                         </div>
                         @endforeach
+
                     </div>
 
                     <form action="{{ route('mensajes.store') }}" method="POST" enctype="multipart/form-data" class="chat-input-area">

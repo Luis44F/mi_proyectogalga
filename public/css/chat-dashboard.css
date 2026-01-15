@@ -76,7 +76,6 @@
     flex: 1;
     padding: 24px;
     background-color: #f8fafc;
-    /* Patrón de fondo sutil opcional */
     background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
     background-size: 20px 20px;
     overflow-y: auto;
@@ -104,7 +103,7 @@
     line-height: 1.5;
 }
 
-/* Mensaje Recibido */
+/* Mensaje Recibido (Blanco) */
 .message.received { justify-content: flex-start; }
 .message.received .message-content {
     background: #fff;
@@ -112,26 +111,37 @@
     color: #334155;
 }
 
-/* Mensaje Enviado */
+/* Mensaje Enviado (Verde suave) */
 .message.sent { justify-content: flex-end; }
 .message.sent .message-content {
-    /* Gradiente sutil verde para mantener colores base pero moderno */
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #fff;
+    /* He ajustado el color a un verde muy claro para que el DOBLE CHECK AZUL se vea bien */
+    background: #dcf8c6; 
+    color: #1e293b;
     border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
-.message.sent .message-time { color: rgba(255,255,255,0.8); }
-.message.sent i { color: rgba(255,255,255,0.9); }
 
+/* --- ESTILOS DEL DOBLE CHECK (NUEVO) --- */
 .message-time {
     font-size: 10px;
     text-align: right;
     margin-top: 4px;
     color: #94a3b8;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+}
+
+/* Reglas específicas para el icono de check */
+.message-time i {
+    font-size: 15px;
+    margin-left: 4px;
+    opacity: .9;
+}
+
+/* Forzar colores de check para que no se mezclen */
+.message-time .text-muted {
+    color: #94a3b8 !important; /* Gris si no leído */
+}
+.message-time .text-primary {
+    color: #3b82f6 !important; /* Azul si leído */
 }
 
 /* Archivos adjuntos */
@@ -147,7 +157,6 @@
     color: inherit;
     transition: background 0.2s;
 }
-.message.sent .file-attachment { background: rgba(255,255,255,0.2); color: #fff; }
 .file-attachment:hover { background: rgba(0,0,0,0.1); }
 .file-attachment .icon { font-size: 20px; }
 .file-attachment .name { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px; }
@@ -166,7 +175,7 @@
     gap: 12px;
     background: #f1f5f9;
     padding: 8px 12px;
-    border-radius: 30px; /* Estilo píldora */
+    border-radius: 30px;
     border: 1px solid transparent;
     transition: all 0.2s ease;
 }

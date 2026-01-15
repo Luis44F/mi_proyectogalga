@@ -99,7 +99,7 @@ body {
     background: linear-gradient(90deg, rgba(59,130,246,0.2) 0%, rgba(59,130,246,0.05) 100%);
     color: #60a5fa;
     border-left: 3px solid #60a5fa;
-    border-radius: 4px 12px 12px 4px; /* Slight tweak to visual */
+    border-radius: 4px 12px 12px 4px;
 }
 
 .menu-item.disabled { opacity: 0.4; pointer-events: none; }
@@ -187,7 +187,6 @@ body {
 .bg-green-light { background: #ecfdf5; }
 .bg-yellow-light { background: #fffbeb; }
 
-/* Custom extra colors for metrics */
 .text-indigo { color: #6366f1; }
 .bg-indigo-light { background: #e0e7ff; }
 .text-teal { color: #14b8a6; }
