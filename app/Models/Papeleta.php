@@ -12,6 +12,7 @@ class Papeleta extends Model
     use HasFactory;
 
     protected $fillable = [
+        
         'cliente',
         'modelo',
         'talla',
@@ -23,7 +24,14 @@ class Papeleta extends Model
         'observaciones',
         'fecha_inicio',
         'fecha_entrega',
-        'estado'
+        'estado',
+
+        // ✅ CHECKS ADMIN
+        'check_programa',
+        'check_cliente',
+        'check_modelo',
+        'check_cantidad',
+        'check_comprador'
     ];
 
     // 📌 Papeleta → Lotes

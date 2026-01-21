@@ -19,13 +19,22 @@ class Lote extends Model
         'area_actual'
     ];
 
+    // 🔗 Lote pertenece a una papeleta
     public function papeleta()
     {
         return $this->belongsTo(Papeleta::class);
     }
 
+    // 🔁 Lote tiene muchos flujos de producción
     public function flujos()
     {
         return $this->hasMany(FlujoProduccion::class);
+    }
+
+    // 🟢 Flujo actual (pendiente de validación de supervisor)
+    public function flujoActual()
+    {
+        return $this->hasOne(FlujoProduccion::class)
+            ->where('check_supervisor', false);
     }
 }

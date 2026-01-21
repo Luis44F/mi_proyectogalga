@@ -24,19 +24,17 @@ class MessageController extends Controller
         $lotesProceso    = Lote::where('estado', 'proceso')->count();
         $lotesTerminados = Lote::where('estado', 'terminado')->count();
 
-        /* ================= MENSAJERÍA AVANZADA ================= */
+        /* ================= MENSAJERÍA ================= */
 
-        // Usuarios ordenados por último mensaje + contador de no leídos
         $users = User::where('id', '!=', $authId)
-    ->withCount([
-        'receivedMessages as unread_count' => function ($q) use ($authId) {
-            $q->where('receptor_id', $authId)
-              ->where('leido', 0);
-        }
-    ])
-    ->get()
-    ->sortByDesc(fn ($u) => optional($u->lastMessage)->created_at);
-
+            ->withCount([
+                'receivedMessages as unread_count' => function ($q) use ($authId) {
+                    $q->where('receptor_id', $authId)
+                      ->where('leido', 0);
+                }
+            ])
+            ->get()
+            ->sortByDesc(fn ($u) => optional($u->lastMessage)->created_at);
 
         $selectedUser = null;
         $conversation = collect();
@@ -55,17 +53,13 @@ class MessageController extends Controller
                 ->orderBy('created_at')
                 ->get();
 
-            // Marcar mensajes como leídos
             Message::where('emisor_id', $selectedUser->id)
                 ->where('receptor_id', $authId)
                 ->where('leido', 0)
                 ->update(['leido' => 1]);
         }
 
-        // Mensajes recibidos (compatibilidad con dashboard actual)
         $messages = Message::where('receptor_id', $authId)->get();
-
-        // Roles para panel admin
         $roles = Role::all();
 
         return view('dashboard', compact(
@@ -98,5 +92,31 @@ class MessageController extends Controller
         ]);
 
         return back();
+    }
+
+    /* ================= TIEMPO REAL (FETCH) ================= */
+
+    public function fetch($userId)
+    {
+        $authId = auth()->id();
+
+        $messages = Message::where(function ($q) use ($authId, $userId) {
+                $q->where('emisor_id', $authId)
+                  ->where('receptor_id', $userId);
+            })
+            ->orWhere(function ($q) use ($authId, $userId) {
+                $q->where('emisor_id', $userId)
+                  ->where('receptor_id', $authId);
+            })
+            ->orderBy('created_at')
+            ->get();
+
+        // marcar como leídos
+        Message::where('emisor_id', $userId)
+            ->where('receptor_id', $authId)
+            ->where('leido', 0)
+            ->update(['leido' => 1]);
+
+        return response()->json($messages);
     }
 }

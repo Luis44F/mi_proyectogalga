@@ -28,25 +28,26 @@ class AuthController extends Controller
     // REGISTRO USANDO ENUM `rol`
     // -----------------------------
     public function registrar(Request $request)
-    {
-        $request->validate([
-            'nombre_completo' => 'required|string',
-            'email'           => 'required|email|unique:users,email',
-            'password'        => 'required|min:6',
-            'telefono'        => 'required',
-            'rol'             => 'required|in:Administrador,Supervisor,Operario',
-        ]);
+{
+    $request->validate([
+        'nombre_completo' => 'required|string|max:255',
+        'email'           => 'required|email|unique:users,email',
+        'password'        => 'required|min:6',
+        'telefono'        => 'nullable|string|max:20',
+        'rol'             => 'required|in:Administrador,Supervisor,Operario',
+    ]);
 
-        $user = User::create([
-            'nombre_completo' => $request->nombre_completo,
-            'email'           => $request->email,
-            'password'        => Hash::make($request->password),
-            'telefono'        => $request->telefono,
-            'rol'             => $request->rol,
-        ]);
+    $user = User::create([
+        'nombre_completo' => trim($request->nombre_completo),
+        'email'           => strtolower(trim($request->email)),
+        'password'        => Hash::make($request->password),
+        'telefono'        => $request->telefono,
+        'rol'             => $request->rol,
+    ]);
 
-        Auth::login($user);
+    Auth::login($user);
 
-        return redirect()->route('dashboard');
-    }
+    return redirect()->route('dashboard');
+}
+
 }
