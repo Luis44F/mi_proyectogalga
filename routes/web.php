@@ -10,7 +10,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FlujoProduccionController;
 use App\Http\Controllers\ProduccionController;
 
-
 // --------------------------------------------
 // HOME
 // --------------------------------------------
@@ -56,24 +55,48 @@ Route::middleware('auth')->group(function () {
     Route::get('/mensajes/leido/{id}', [MessageController::class, 'markAsRead'])
         ->name('mensajes.read');
 
-    // 🔄 Mensajes en tiempo real
     Route::get('/mensajes/fetch/{user}', [MessageController::class, 'fetch'])
         ->name('mensajes.fetch');
 });
 
 // --------------------------------------------
-// PAPELETAS
+// 🧾 PAPELETAS (RUTAS LIMPIAS Y CORRECTAS)
 // --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    Route::get('/papeletas', [PapeletaController::class, 'index'])
-        ->name('papeletas.index');
+    // 📄 VISTA GENERAL (ÚLTIMA PAPELETA)
+    Route::get('/papeleta',
+        [PapeletaController::class, 'ver']
+    )->name('papeleta.ver');
 
-    Route::post('/papeletas', [PapeletaController::class, 'store'])
-        ->name('papeletas.store');
+    // ➕ CREAR PAPELETA (SOLO ADMIN)
+    Route::get('/papeletas/create',
+        [PapeletaController::class, 'create']
+    )->name('papeletas.create');
 
-    Route::get('/papeletas/{id}/lotes', [LoteController::class, 'index'])
-        ->name('lotes.index');
+    Route::post('/papeletas',
+        [PapeletaController::class, 'store']
+    )->name('papeletas.store');
+
+    // ✅ AUTORIZAR (CAMBIO DE ESTADO)
+    Route::put('/papeletas/{papeleta}/autorizar',
+        [PapeletaController::class, 'autorizar']
+    )->name('papeletas.autorizar');
+
+    // ⛔ DETENER
+    Route::put('/papeletas/{papeleta}/detener',
+        [PapeletaController::class, 'detener']
+    )->name('papeletas.detener');
+
+    // ▶️ REACTIVAR
+    Route::put('/papeletas/{papeleta}/reactivar',
+        [PapeletaController::class, 'reactivar']
+    )->name('papeletas.reactivar');
+
+    // 📦 LOTES POR PAPELETA
+    Route::get('/papeletas/{papeleta}/lotes',
+        [LoteController::class, 'index']
+    )->name('lotes.index');
 });
 
 // --------------------------------------------
@@ -81,11 +104,13 @@ Route::middleware('auth')->group(function () {
 // --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    Route::post('/lotes', [LoteController::class, 'store'])
-        ->name('lotes.store');
+    Route::post('/lotes',
+        [LoteController::class, 'store']
+    )->name('lotes.store');
 
-    Route::get('/lotes/{lote}/estado/{estado}', [LoteController::class, 'cambiarEstado'])
-        ->name('lotes.estado');
+    Route::get('/lotes/{lote}/estado/{estado}',
+        [LoteController::class, 'cambiarEstado']
+    )->name('lotes.estado');
 });
 
 // --------------------------------------------
@@ -93,69 +118,47 @@ Route::middleware('auth')->group(function () {
 // --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    Route::post('/admin/usuarios/{user}/rol', [AdminController::class, 'cambiarRol'])
-        ->name('admin.usuario.rol');
+    Route::post('/admin/usuarios/{user}/rol',
+        [AdminController::class, 'cambiarRol']
+    )->name('admin.usuario.rol');
 });
 
 // --------------------------------------------
-// PAPELETAS – ACCIONES ADMIN
+// FLUJO DE PRODUCCIÓN (POR LOTE)
 // --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    Route::post('/papeletas/{id}/autorizar', [PapeletaController::class, 'autorizar'])
-        ->name('papeletas.autorizar');
-
-    Route::post('/papeletas/{id}/detener', [PapeletaController::class, 'detener'])
-        ->name('papeletas.detener');
-
-    Route::post('/papeletas/{id}/reactivar', [PapeletaController::class, 'reactivar'])
-        ->name('papeletas.reactivar');
-});
-
-// --------------------------------------------
-// FLUJO DE PRODUCCIÓN (COMPLETO)
-// --------------------------------------------
-Route::middleware('auth')->group(function () {
-
-    // ▶ Iniciar etapa
     Route::post('/flujo-produccion/iniciar',
         [FlujoProduccionController::class, 'iniciar']
     )->name('flujo.iniciar');
 
-    // ⏹ Finalizar etapa
     Route::post('/flujo-produccion/{id}/finalizar',
         [FlujoProduccionController::class, 'finalizar']
     )->name('flujo.finalizar');
 
-    // 🔐 Autorizar etapa (Administrador)
     Route::post('/flujo-produccion/{id}/autorizar',
         [FlujoProduccionController::class, 'autorizar']
     )->name('flujo.autorizar');
 
-    // 📊 Ver flujo completo por lote
     Route::get('/lotes/{lote}/flujo',
         [FlujoProduccionController::class, 'index']
     )->name('flujo.index');
 
-    // ➕ Crear siguiente etapa del flujo
     Route::post('/flujo/{lote}/crear',
         [FlujoProduccionController::class, 'crearSiguiente']
     )->name('flujo.crear');
 
-    // ✅ Check de supervisor
     Route::post('/flujo/{flujo}/check',
         [FlujoProduccionController::class, 'checkSupervisor']
     )->name('flujo.check');
 });
 
-
 // --------------------------------------------
-// PRODUCCIÓN – FLUJO GENERAL (AISLADO)
+// PRODUCCIÓN – FLUJO GENERAL
 // --------------------------------------------
 Route::middleware('auth')->group(function () {
 
-    Route::get('/produccion/flujo', 
+    Route::get('/produccion/flujo',
         [ProduccionController::class, 'flujo']
     )->name('produccion.flujo');
-
 });

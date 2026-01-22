@@ -48,11 +48,25 @@
 
     <span class="menu-title">MÓDULOS</span>
 
-    {{-- 1️⃣ NUEVO LINK AGREGADO AQUÍ --}}
+    {{-- 1️⃣ NUEVO LINK EN EL SIDEBAR --}}
     <a href="{{ route('produccion.flujo') }}" class="menu-item">
         <i class="bi bi-diagram-3-fill"></i>
         Flujo de Producción
     </a>
+
+    
+    <a href="{{ route('papeleta.ver') }}" class="menu-item">
+         <i class="bi bi-file-earmark-text-fill"></i>
+         Ver Papeleta
+    </a>
+
+
+    @if(auth()->user()->rol === 'Administrador')
+        <a href="{{ route('papeletas.create') }}" class="menu-item">
+            <i class="bi bi-file-earmark-plus-fill"></i>
+            Crear Papeleta
+        </a>
+    @endif
 
     <a class="menu-item disabled">
         <i class="bi bi-box-seam-fill"></i>
@@ -88,6 +102,8 @@
 
     {{-- 👑 ADMINISTRADOR GENERAL --}}
     @if($user->isAdmin())
+    
+    {{-- MÉTRICAS --}}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="card-galga card-metric">
@@ -134,6 +150,32 @@
             </div>
         </div>
     </div>
+
+    {{-- 2️⃣ NUEVA SECCIÓN: GESTIÓN DE PAPELETAS --}}
+    {{-- Se usa card-galga en lugar de card para mantener el estilo visual --}}
+    @if(isset($papeletas) && count($papeletas) > 0)
+        <h5 class="fw-bold mb-3 text-muted text-uppercase small">📦 Acciones Rápidas</h5>
+        @foreach($papeletas as $papeleta)
+        <div class="card-galga mb-3">
+            <div class="p-3 d-flex justify-content-between align-items-center">
+
+                <div>
+                    <strong class="text-primary"><i class="bi bi-file-text me-1"></i> Papeleta #{{ $papeleta->id }}</strong><br>
+                    <span class="text-muted small">{{ $papeleta->modelo }}</span>
+                </div>
+
+                <a href="{{ route('lotes.index', $papeleta->id) }}"
+                   class="btn btn-outline-primary rounded-pill btn-sm px-4 fw-bold">
+                    Gestionar lotes <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+            </div>
+        </div>
+        @endforeach
+        <hr class="my-4 text-muted opacity-25">
+    @endif
+    {{-- FIN NUEVA SECCIÓN --}}
+
     @endif
 
     {{-- 👑 ADMINISTRACIÓN USUARIOS --}}
@@ -347,29 +389,11 @@
         fetch(`/mensajes/fetch/${userId}`)
             .then(r => r.json())
             .then(messages => {
-
-                // Si no hay cambios en la cantidad de mensajes, no redibujamos
-                // (OJO: Si quieres actualizar solo el estado "leído" sin nuevos mensajes,
-                // deberías comparar el contenido o quitar esta línea, pero es más eficiente así).
-                // Para que el check cambie de gris a azul sin recargar, 
-                // lo ideal es comparar el último estado, pero por simplicidad y rendimiento:
-                
-                // Opción A: Solo actualiza si hay nuevos mensajes (Mejor rendimiento)
-                // if (messages.length === lastCount) return;
-                
-                // Opción B: Actualiza siempre para ver el cambio de color del check (Tu requerimiento)
-                // Vamos a usar una variable para detectar cambios o forzar actualización cada X ciclos.
-                // Por ahora, actualizamos siempre el HTML para garantizar que el check cambie de color.
-                
                 if (messages.length === lastCount) {
-                    // Checkeamos si el último mensaje cambió de estado 'leido'
-                    const lastMsg = messages[messages.length - 1];
-                    // Si tienes lógica compleja aqui, dejalo pasar.
-                    // Para este ejemplo, dejaremos que actualice para ver el check azul.
+                    // Aquí podrías agregar lógica extra si quisieras
                 }
                 
                 lastCount = messages.length;
-
                 chatBox.innerHTML = '';
                 
                 // Mantenemos el header de inicio
@@ -385,10 +409,8 @@
                             : '<i class="bi bi-check2-all text-muted"></i>';
                     }
 
-                    // Manejo de adjuntos para que no se pierdan al actualizar
                     let attachmentHtml = '';
                     if(msg.archivo_adj) {
-                         // Ajusta la ruta '/storage/' según tu configuración de symlink
                          attachmentHtml = `
                             <a href="/storage/${msg.archivo_adj}" target="_blank" class="file-attachment">
                                 <div class="icon"><i class="bi bi-file-earmark-arrow-down"></i></div>
@@ -396,7 +418,6 @@
                             </a>`;
                     }
 
-                    // Construcción del HTML respetando las clases CSS (message-content)
                     chatBox.innerHTML += `
                         <div class="message ${mine ? 'sent' : 'received'}">
                             <div class="message-content">
@@ -410,17 +431,10 @@
                         </div>
                     `;
                 });
-
-                // Scroll al final solo si estamos cerca del final o es carga nueva
-                // Por simplicidad, scroll al final siempre como pediste
-                // chatBox.scrollTop = chatBox.scrollHeight; 
             });
     }
 
-    // Ejecutar cada 3 segundos
     setInterval(fetchMessages, 3000);
-    
-    // Scroll inicial
     if(chatBox) chatBox.scrollTop = chatBox.scrollHeight;
 </script>
 
