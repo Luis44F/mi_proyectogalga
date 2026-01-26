@@ -25,6 +25,8 @@ class Papeleta extends Model
         'fecha_inicio',
         'fecha_entrega',
         'estado',
+        'autorizado_por',
+        'fecha_autorizacion',
 
         // ✅ CHECKS ADMIN
         'check_programa',
@@ -51,5 +53,11 @@ class Papeleta extends Model
     {
         return $this->hasOne(Distribucion::class);
     }
+
+    public function autorizadoPor()
+    {
+        return $this->belongsTo(User::class, 'autorizado_por');
+    }
+
 
 }
