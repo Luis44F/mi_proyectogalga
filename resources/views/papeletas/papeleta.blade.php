@@ -30,7 +30,7 @@
         @if($papeleta->estado === 'AUTORIZADA' && $papeleta->autorizadoPor)
             <div class="alert alert-success shadow-sm">
                 <strong>🧾 Autorizada por:</strong>
-                {{ $papeleta->autorizadoPor->name }} <br>
+                {{ $papeleta->autorizadoPor?->nombre_completo ?? 'No disponible' }}
 
                 <strong>📅 Fecha de autorización:</strong>
                 {{-- Asegúrate de que 'fecha_autorizacion' sea tipo 'datetime' en tu modelo --}}

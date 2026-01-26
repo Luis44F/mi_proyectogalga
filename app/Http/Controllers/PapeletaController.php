@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 
 class PapeletaController extends Controller
 {
-    // 📄 LISTADO DE PAPELETAS
+    /* =========================
+     |   LISTADO DE PAPELETAS
+     |=========================*/
     public function index()
     {
         $papeletas = Papeleta::orderBy('id', 'desc')->get();
@@ -18,7 +20,9 @@ class PapeletaController extends Controller
         ]);
     }
 
-    // 📄 VER ÚLTIMA PAPELETA
+    /* =========================
+     |   VER ÚLTIMA PAPELETA
+     |=========================*/
     public function ver()
     {
         $papeleta = Papeleta::latest()->first();
@@ -33,7 +37,9 @@ class PapeletaController extends Controller
         ]);
     }
 
-    // 📄 VER PAPELETA ESPECÍFICA
+    /* =========================
+     |   VER PAPELETA ESPECÍFICA
+     |=========================*/
     public function show(Papeleta $papeleta)
     {
         $papeleta->load('lotes');
@@ -44,7 +50,9 @@ class PapeletaController extends Controller
         ]);
     }
 
-    // 🆕 CREAR PAPELETA (SOLO ADMIN)
+    /* =========================
+     |   CREAR PAPELETA (ADMIN)
+     |=========================*/
     public function create()
     {
         if (auth()->user()->rol !== 'Administrador') {
@@ -54,7 +62,9 @@ class PapeletaController extends Controller
         return view('papeletas.create');
     }
 
-    // 💾 GUARDAR PAPELETA (SOLO ADMIN)
+    /* =========================
+     |   GUARDAR PAPELETA
+     |=========================*/
     public function store(Request $request)
     {
         if (auth()->user()->rol !== 'Administrador') {
@@ -81,39 +91,50 @@ class PapeletaController extends Controller
             ->with('success', 'Papeleta creada correctamente');
     }
 
-    // ✅ AUTORIZAR PAPELETA (ENTRA A PRODUCCIÓN)
+    /* =========================
+     |   AUTORIZAR PAPELETA
+     |=========================*/
     public function autorizar(Papeleta $papeleta)
     {
         if (auth()->user()->rol !== 'Administrador') {
             abort(403);
         }
 
+        // 🔒 Validación de estado
         if ($papeleta->estado !== 'CREADA') {
-            return back()->with('error', 'La papeleta no puede autorizarse');
+            return back()->with('error', 'La papeleta ya fue procesada.');
         }
 
         $papeleta->update([
-            'estado' => 'AUTORIZADA',
-            'autorizado_por' => auth()->id(),
-            'fecha_autorizacion' => now()
+            'estado'              => 'AUTORIZADA',
+            'autorizado_por'      => auth()->id(),
+            'fecha_autorizacion'  => now(),
         ]);
 
-        return back()->with('success', 'Papeleta autorizada y enviada a producción');
+        return redirect()
+            ->route('papeleta.ver')
+            ->with('success', 'Papeleta autorizada correctamente.');
     }
 
-    // ⛔ DETENER
+    /* =========================
+     |   DETENER PAPELETA
+     |=========================*/
     public function detener(Papeleta $papeleta)
     {
         if (auth()->user()->rol !== 'Administrador') {
             abort(403);
         }
 
-        $papeleta->update(['estado' => 'DETENIDA']);
+        $papeleta->update([
+            'estado' => 'DETENIDA'
+        ]);
 
         return back()->with('success', 'Papeleta detenida');
     }
 
-    // ▶️ REACTIVAR
+    /* =========================
+     |   REACTIVAR PAPELETA
+     |=========================*/
     public function reactivar(Papeleta $papeleta)
     {
         if (auth()->user()->rol !== 'Administrador') {
@@ -124,7 +145,9 @@ class PapeletaController extends Controller
             return back();
         }
 
-        $papeleta->update(['estado' => 'AUTORIZADA']);
+        $papeleta->update([
+            'estado' => 'AUTORIZADA'
+        ]);
 
         return back()->with('success', 'Papeleta reactivada');
     }
