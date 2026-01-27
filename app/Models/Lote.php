@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Papeleta;
-use App\Models\FlujoProduccion;
 
 class Lote extends Model
 {
@@ -31,10 +29,16 @@ class Lote extends Model
         return $this->hasMany(FlujoProduccion::class);
     }
 
-    // 🟢 Flujo actual (pendiente de validación de supervisor)
+    // 🟢 Flujo actual pendiente de validación
     public function flujoActual()
     {
         return $this->hasOne(FlujoProduccion::class)
             ->where('check_supervisor', false);
     }
+
+    public function lotes()
+    {
+        return $this->hasMany(Lote::class);
+    }
+
 }

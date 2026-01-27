@@ -13,22 +13,25 @@ class LoteController extends Controller
     {
         $papeleta = Papeleta::findOrFail($id);
 
-        $lotes = Lote::where('papeleta_id', $id)->get();
+        $lotes = $papeleta->lotes()
+            ->orderBy('id')
+            ->get();
 
         return view('lotes.index', compact('papeleta', 'lotes'));
     }
 
-    // 🆕 CREAR LOTE (AJUSTE LIMPIO – SIN ROMPER ROLES)
+    // 🆕 CREAR LOTE
     public function store(Request $request)
     {
-        // 🔐 RESPETA TU VALIDACIÓN DE ROLES
+        // 🔐 CONTROL DE ROLES (COINCIDE CON ENUM users.rol)
         if (!in_array(auth()->user()->rol, [
-            'Administrador General',
-            'Supervisor General de Producción'
+            'Administrador',
+            'Supervisor'
         ])) {
-            abort(403);
+            abort(403, 'No autorizado');
         }
 
+        // ✅ VALIDACIÓN
         $request->validate([
             'papeleta_id' => 'required|exists:papeletas,id',
             'cantidad'    => 'required|integer|min:1'
@@ -36,23 +39,23 @@ class LoteController extends Controller
 
         $papeleta = Papeleta::findOrFail($request->papeleta_id);
 
-        // ✅ SOLO SI ESTÁ AUTORIZADA
+        // ⛔ SOLO SI ESTÁ AUTORIZADA
         if ($papeleta->estado !== 'AUTORIZADA') {
             return back()->with('error', 'La papeleta no está autorizada');
         }
 
-        // 🔢 Generar número de lote automático
+        // 🔢 NÚMERO DE LOTE AUTOMÁTICO
         $contador = $papeleta->lotes()->count() + 1;
 
         Lote::create([
             'papeleta_id' => $papeleta->id,
             'numero_lote' => 'L-' . str_pad($contador, 3, '0', STR_PAD_LEFT),
             'cantidad'    => $request->cantidad,
-            'estado'      => 'En proceso',
+            'estado'      => 'EN_PRODUCCION',
             'area_actual' => 'Tejedora'
         ]);
 
-        // 🔄 Cambia papeleta a producción
+        // 🔄 CAMBIAR ESTADO DE PAPELETA
         $papeleta->update([
             'estado' => 'EN_PRODUCCION'
         ]);
@@ -60,22 +63,26 @@ class LoteController extends Controller
         return back()->with('success', 'Lote creado correctamente');
     }
 
-    // 🔁 CAMBIAR ESTADO DEL LOTE (NO SE TOCA)
+    // 🔁 CAMBIAR ESTADO DEL LOTE
     public function cambiarEstado(Lote $lote, $estado)
     {
         $rol = auth()->user()->rol;
 
-        if (!in_array($estado, ['pendiente', 'proceso', 'terminado'])) {
-            abort(400);
+        $estadosPermitidos = ['pendiente', 'proceso', 'terminado'];
+
+        if (!in_array($estado, $estadosPermitidos)) {
+            abort(400, 'Estado inválido');
         }
 
-        if ($rol === 'Operador de Tejedora' && $estado === 'terminado') {
+        // ⛔ REGLA ESPECÍFICA DE OPERADOR
+        if ($rol === 'Operador' && $estado === 'terminado') {
             abort(403);
         }
 
+        // 🔐 SOLO ADMINISTRADOR Y SUPERVISOR
         if (!in_array($rol, [
-            'Administrador General',
-            'Supervisor General de Producción'
+            'Administrador',
+            'Supervisor'
         ])) {
             abort(403);
         }
@@ -84,6 +91,7 @@ class LoteController extends Controller
             'estado' => $estado
         ]);
 
+        // ✅ SI TODOS LOS LOTES TERMINARON → LISTA PARA ENVÍO
         if ($estado === 'terminado') {
             $papeleta = $lote->papeleta;
 
