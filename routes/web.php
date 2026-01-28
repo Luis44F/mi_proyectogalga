@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/papeleta', [PapeletaController::class, 'ver'])
         ->name('papeleta.ver');
 
-    // ➕ CREAR PAPELETA (ADMIN)
+    // ➕ CREAR PAPELETA
     Route::get('/papeletas/create', [PapeletaController::class, 'create'])
         ->name('papeletas.create');
 
@@ -87,13 +87,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/papeletas/{papeleta}/reactivar', [PapeletaController::class, 'reactivar'])
         ->name('papeletas.reactivar');
 
+    // 🚀 INICIAR PRODUCCIÓN (CREA LOTES AUTOMÁTICOS)
+    Route::post(
+        '/papeleta/{id}/iniciar-produccion',
+        [PapeletaController::class, 'iniciarProduccion']
+    )->name('papeleta.iniciarProduccion');
+
     // 📦 VER LOTES DE UNA PAPELETA
     Route::get('/papeletas/{papeleta}/lotes', [LoteController::class, 'index'])
         ->name('lotes.index');
 });
 
 // --------------------------------------------
-// 📦 LOTES (RUTA CORRECTA Y ÚNICA)
+// 📦 LOTES (CREAR MANUAL)
 // --------------------------------------------
 Route::post('/lotes/crear', [LoteController::class, 'store'])
     ->name('lotes.store')
