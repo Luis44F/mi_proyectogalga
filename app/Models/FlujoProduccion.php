@@ -14,31 +14,35 @@ class FlujoProduccion extends Model
     protected $table = 'flujo_produccion';
 
     /**
-     * Campos permitidos (NO se rompe nada existente)
+     * Fillable: Combinación de campos originales + Motor de flujo
      */
     protected $fillable = [
         'lote_id',
+        'fase',              // 🆕 Motor de flujo
+        'orden',             // 🆕 Motor de flujo
         'area',
         'fecha_inicio',
         'fecha_fin',
         'conteo_inicial',
         'conteo_final',
         'operador_id',
+        'evidencia_foto',    // 🆕 Motor de flujo
         'fallas_json',
         'observaciones',
         'autorizado_por',
         'fecha_autorizacion',
 
-        // 🆕 NUEVOS CAMPOS (compatibles)
-        'datos',
-        'completado',
+        // Campos de compatibilidad (por si se usan en el frontend/scripts)
+        'datos',             
+        'completado',        // Equivale a check_proceso
+        'check_proceso',     // 🆕 Motor de flujo
         'check_supervisor',
         'supervisor_id',
         'fecha_check',
     ];
 
     /**
-     * Casts seguros (solo interpretación)
+     * Casts: Aseguramos la integridad de los datos
      */
     protected $casts = [
         'fallas_json'        => 'array',
@@ -49,7 +53,9 @@ class FlujoProduccion extends Model
         'fecha_check'        => 'datetime',
         'conteo_inicial'     => 'integer',
         'conteo_final'       => 'integer',
+        'orden'              => 'integer',
         'completado'         => 'boolean',
+        'check_proceso'      => 'boolean',
         'check_supervisor'   => 'boolean',
     ];
 
@@ -57,32 +63,28 @@ class FlujoProduccion extends Model
      * RELACIONES
      */
 
-    // 🔗 Flujo pertenece a un lote
     public function lote()
     {
         return $this->belongsTo(Lote::class);
     }
 
-    // 👷 Operador que ejecuta el proceso
     public function operador()
     {
         return $this->belongsTo(User::class, 'operador_id');
     }
 
-    // 🔐 Usuario que autoriza el cierre del flujo
     public function autorizadoPor()
     {
         return $this->belongsTo(User::class, 'autorizado_por');
     }
 
-    // 👨‍💼 Supervisor que valida el proceso
     public function supervisor()
     {
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
     /**
-     * 🔒 SCOPES ÚTILES (siguen funcionando igual)
+     * SCOPES (Tu lógica operativa se mantiene intacta)
      */
 
     public function scopeAbiertos($query)
@@ -100,9 +102,15 @@ class FlujoProduccion extends Model
         return $query->whereNotNull('fecha_autorizacion');
     }
 
-    // 🆕 Flujos completados
+    // Adaptado para funcionar con el campo real de la DB (check_proceso)
     public function scopeCompletados($query)
     {
-        return $query->where('completado', true);
+        return $query->where('check_proceso', true);
+    }
+
+    // 🆕 Útil para el motor de flujo: obtener la fase actual del lote
+    public function scopeDeLote($query, $loteId)
+    {
+        return $query->where('lote_id', $loteId)->orderBy('orden');
     }
 }

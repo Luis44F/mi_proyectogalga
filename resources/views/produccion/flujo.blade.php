@@ -13,7 +13,6 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', system-ui, sans-serif; }
         
-        /* Contenedor principal estilo tarjeta */
         .main-card {
             border: none;
             border-radius: 12px;
@@ -22,14 +21,12 @@
             overflow: hidden;
         }
 
-        /* Encabezado */
         .card-header {
             background-color: #fff;
             border-bottom: 1px solid #f0f0f0;
             padding: 1.5rem;
         }
 
-        /* Tabla Estilizada */
         .table { margin-bottom: 0; }
         .table thead th {
             background-color: #f8f9fa;
@@ -52,7 +49,6 @@
             background-color: #fcfcfc;
         }
 
-        /* Estilos específicos para datos */
         .lote-id {
             font-weight: 700;
             color: #0d6efd;
@@ -66,7 +62,6 @@
             color: #212529;
         }
         
-        /* Badge de Estado personalizado */
         .status-badge {
             padding: 6px 12px;
             border-radius: 30px;
@@ -76,9 +71,8 @@
             align-items: center;
             gap: 5px;
         }
-        .badge-prod { background-color: #d1e7dd; color: #0f5132; } /* Verde suave */
+        .badge-prod { background-color: #d1e7dd; color: #0f5132; }
         
-        /* Empty State */
         .empty-state { padding: 4rem 2rem; text-align: center; }
         .empty-icon { font-size: 3rem; color: #dee2e6; margin-bottom: 1rem; }
     </style>
@@ -87,7 +81,6 @@
 
 <div class="container py-5">
 
-    {{-- Encabezado de la página --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-dark mb-1">🏭 Flujo de Producción</h2>
@@ -100,18 +93,15 @@
         </div>
     </div>
 
-    {{-- Tarjeta Principal --}}
     <div class="main-card">
         
         @if($lotes->isEmpty())
-            {{-- Diseño cuando NO hay datos --}}
             <div class="empty-state">
                 <i class="bi bi-box-seam empty-icon"></i>
                 <h5 class="fw-bold text-muted">No hay producción activa</h5>
                 <p class="text-secondary small">Los lotes creados aparecerán en esta lista.</p>
             </div>
         @else
-            {{-- Tabla Responsive --}}
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
@@ -120,7 +110,8 @@
                             <th scope="col">Ref. Papeleta</th>
                             <th scope="col">Área Actual</th>
                             <th scope="col">Avance</th>
-                            <th scope="col" class="text-end pe-4">Estado</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col" class="text-center pe-4">Acción</th> {{-- Nueva Columna --}}
                         </tr>
                     </thead>
                     <tbody>
@@ -148,16 +139,24 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{-- Barra de progreso visual (Decorativa o real si tienes el dato) --}}
+                                    {{-- Barra de progreso visual real usando el helper del modelo --}}
                                     <div class="progress" style="height: 6px; width: 100px; background-color: #e9ecef;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 50%"></div>
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $lote->progreso }}%"></div>
                                     </div>
+                                    <small class="text-muted" style="font-size: 0.7rem;">{{ $lote->progreso }}%</small>
                                 </td>
-                                <td class="text-end pe-4">
+                                <td>
                                     <span class="status-badge badge-prod">
                                         <span class="spinner-grow spinner-grow-sm me-1" style="width: 8px; height: 8px;"></span>
                                         EN PRODUCCIÓN
                                     </span>
+                                </td>
+                                {{-- Botón de Acción --}}
+                                <td class="text-center pe-4">
+                                    <a href="{{ url('produccion/'.$lote->id.'/validar') }}" 
+                                       class="btn btn-success btn-sm rounded-pill px-3 shadow-sm">
+                                        <i class="bi bi-check-circle me-1"></i> Validar
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -165,7 +164,6 @@
                 </table>
             </div>
             
-            {{-- Footer de la tabla (Opcional, para paginación o totales) --}}
             <div class="bg-light p-3 border-top d-flex justify-content-end">
                 <small class="text-muted fw-bold">Total Lotes: {{ $lotes->count() }}</small>
             </div>

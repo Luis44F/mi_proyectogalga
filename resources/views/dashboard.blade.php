@@ -68,6 +68,14 @@
         </a>
     @endif
 
+
+    <a href="{{ url('produccion/1/validar') }}"
+   class="btn btn-success rounded-pill px-4 fw-bold">
+   <i class="bi bi-check-circle-fill me-1"></i>
+   Validar Lote #1
+</a>
+
+
     <a class="menu-item disabled">
         <i class="bi bi-box-seam-fill"></i>
         Inventario <small>Próx.</small>

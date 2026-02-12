@@ -10,33 +10,39 @@ return new class extends Migration {
         Schema::create('flujo_produccion', function (Blueprint $table) {
             $table->id();
 
-            // Relación con lote
+            // 1. Relación con lote
             $table->foreignId('lote_id')
                 ->constrained('lotes')
                 ->onDelete('cascade');
 
-            // Área del proceso
+            // 2. Control de Flujo (Campos añadidos para el Motor)
+            $table->string('fase'); // Ej: 'Corte', 'Costura', etc.
+            $table->integer('orden'); // Para saber qué fase va primero
+            $table->boolean('check_proceso')->default(false); // Estado de completado
+
+            // 3. Área responsable
             $table->string('area');
 
-            // Fechas y tiempos
+            // 4. Fechas y tiempos
             $table->timestamp('fecha_inicio')->nullable();
             $table->timestamp('fecha_fin')->nullable();
 
-            // Conteos
+            // 5. Conteos
             $table->integer('conteo_inicial')->nullable();
             $table->integer('conteo_final')->nullable();
 
-            // Operador responsable
+            // 6. Operador responsable
             $table->foreignId('operador_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
-
-            // Fallas y observaciones
+            
+            // 7. Evidencia y Fallas
+            $table->string('evidencia_foto')->nullable(); // Nuevo campo para control visual
             $table->json('fallas_json')->nullable();
             $table->text('observaciones')->nullable();
 
-            // Check del Administrador
+            // 8. Autorización (Administrador)
             $table->foreignId('autorizado_por')
                 ->nullable()
                 ->constrained('users')

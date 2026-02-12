@@ -145,6 +145,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/flujo/{flujo}/check', [FlujoProduccionController::class, 'checkSupervisor'])
         ->name('flujo.check');
+        
+    // 🆕 VALIDAR FASE (NUEVA RUTA INTEGRADA)
+    Route::post('/flujo/{flujo}/validar', [FlujoProduccionController::class, 'validar'])
+        ->name('flujo.validar');
 });
 
 // --------------------------------------------
@@ -155,3 +159,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/produccion/flujo', [ProduccionController::class, 'flujo'])
         ->name('produccion.flujo');
 });
+
+Route::get('/produccion/{flujo}/validar', function (\App\Models\FlujoProduccion $flujo) {
+    return view('produccion.validar', compact('flujo'));
+})->middleware('auth');
